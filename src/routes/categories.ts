@@ -6,6 +6,7 @@ import categoriesController from '../controllers/categoriesController';
 routes.post('/', categoriesController.createCategory)
       .get('/', categoriesController.getAllCategories)
       .get('/id', categoriesController.getCategory)
+      .put('/:id', categoriesController.updateCategory)
       .delete('/:id', categoriesController.deleteCategory);
 
 export default routes;
