@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import { config } from '../config';
 import User from '../models/User';
-
 class authController {
 
 	async register(req: Request, res: Response) {
@@ -28,11 +29,23 @@ class authController {
 			const user = await User.findOne({ username: req.body.username });
 			const validated = await bcrypt.compare(req.body.password, user.password);
 
+			const token = jwt.sign(
+				{ user: user.id  },
+				config.jwt.key,
+				{
+				  expiresIn: "2h",
+				}
+			  );
+			  user.token = token;
+
+			  
 			if (!user || !validated) {
 				return res.status(400).json('Wrong credentials!');
+			} else {
+				return res.status(200).json(user);
 			}
 
-			return res.status(200).json(user);
+
 		} catch (error) {
 			res.status(500).json(error);
 		}

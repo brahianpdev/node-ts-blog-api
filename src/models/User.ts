@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 
-// const UserSchema: Schema = new mongoose.Schema({
 const UserSchema: Schema = new Schema({
   username: {
       type: String,
@@ -16,10 +15,14 @@ const UserSchema: Schema = new Schema({
       type: String,
       required: true,
     },
-    profilePic: {
+    profilePicture: {
       type: String,
       default: "",
     },
+    token: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );
