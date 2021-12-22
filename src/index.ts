@@ -4,7 +4,6 @@ import morgan from 'morgan';
 import express from 'express';
 import mongoose from 'mongoose';
 
-// TODO: Configurar prettier, eslint, docker!
 import { config } from './config';
 import indexRoutes from './routes';
 
