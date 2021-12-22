@@ -12,6 +12,6 @@ routes.use('/', authRoutes);
 routes.use('/users', userRoutes);
 routes.use('/posts', postsRoutes);
 routes.use('/categories', categoriesRoutes);
-routes.use('/files', uploadRoutes);
+routes.use('/files', uploadRoutes); 
 
 export default routes;
