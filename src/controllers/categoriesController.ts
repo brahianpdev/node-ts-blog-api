@@ -31,6 +31,30 @@ class categoriesController {
 	}
 
 
+	async updateCategory(req: Request, res: Response) {
+		try {
+			const category = await Category.findById(req.params.id);
+			if (category.username === req.body.username) {
+				try {
+					const updateCategory = await Category.findByIdAndUpdate(
+						req.params.id,
+						{
+							$set: req.body,
+						},
+						{ new: true },
+					);
+					return res.status(200).json(updateCategory);
+				} catch (error) {
+					return res.status(500).json(error);
+				}
+			} else {
+				return res.status(401).json('You can update only your category!');
+			}
+		} catch (err) {
+			return res.status(500).json(err);
+		}
+	}
+
 	async deleteCategory(req: Request, res: Response) {
 		try {
 			const category = await Category.findById(req.params.id);
