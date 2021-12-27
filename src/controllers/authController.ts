@@ -1,55 +1,64 @@
 import bcrypt from 'bcrypt';
+import generateJWT from '../middlewares/generateJWT';
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { config } from '../config';
+
 import User from '../models/User';
 class authController {
-
 	async register(req: Request, res: Response) {
 		try {
-			const salt = await bcrypt.genSalt(10);
-			const password = req.body.password;
-			const hashedPassword = await bcrypt.hash(password, salt);
+			const { username, email, password, role } = req.body;
 
-			const newUser = new User({
-				username: req.body.username,
-				email: req.body.email,
-				password: hashedPassword,
-			});
+			const user = new User({ username, email, password, role });
 
-			const user = await newUser.save();
-			return res.status(200).json(user);
+			const salt = bcrypt.genSaltSync();
+			user.password = bcrypt.hashSync(password, salt);
+
+			const newUser = await user.save();
+
+			return res.status(200).json(newUser);
 		} catch (error) {
 			res.status(500).json(error);
 		}
 	}
 
 	async login(req: Request, res: Response) {
+		const { email, password } = req.body;
+
 		try {
-			const user = await User.findOne({ username: req.body.username });
-			const validated = await bcrypt.compare(req.body.password, user.password);
+			const user = await User.findOne({ email });
 
-			const token = jwt.sign(
-				{ user: user.id  },
-				config.jwt.key,
-				{
-				  expiresIn: "2h",
-				}
-			  );
-			  user.token = token;
-
-			  
-			if (!user || !validated) {
-				return res.status(400).json('Wrong credentials!');
-			} else {
-				return res.status(200).json(user);
+			if (!user) {
+				return res.status(400).json({
+					msg: 'User and or password is incorrect: email',
+				});
 			}
 
+			if (!user.state) {
+				return res.status(400).json({
+					msg: 'User and or password is incorrect - state: false',
+				});
+			}
 
+			const validPassword = bcrypt.compareSync(password, user.password);
+			if (!validPassword) {
+				return res.status(400).json({
+					msg: 'User and or password is incorrect: password',
+				});
+			}
+
+			const token = await generateJWT(user.id);
+
+			res.json({
+				user,
+				token,
+			});
 		} catch (error) {
-			res.status(500).json(error);
+			console.log(error);
+			res.status(500).json({
+				msg: 'Contact the administrator',
+			});
 		}
 	}
 }
 
-export default new authController;
+export default new authController();
