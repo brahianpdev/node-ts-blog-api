@@ -12,7 +12,7 @@ routes
 	.post(
 		'/',
 		[
-			// validateJWT,
+			validateJWT,
 			check('name', 'The name is required').not().isEmpty(),
 			validateFields,
 		],
@@ -27,7 +27,7 @@ routes
 	.put(
 		'/:id',
 		[
-			// validateJWT,
+			validateJWT,
 			check('name', 'The name is required').not().isEmpty(),
 			check('id').custom(existsCategoryById),
 			validateFields,

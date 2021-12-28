@@ -1,10 +1,10 @@
 import { Router } from 'express';
 const routes = Router();
 
-import uploadFile from '../services/uploadFiles';
+import uploadFile from '../services/uploadFilesCLOUD';
 import uploadController from '../controllers/uploadController';
 
-routes.post('/', uploadFile.single('filePost'));
-routes.post('/', uploadController.upload)
+routes.post('/', uploadFile.single('file'));
+routes.post('/', uploadController.uploadFile)
 
 export default routes;

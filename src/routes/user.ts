@@ -31,7 +31,15 @@ routes
 		],
 		userController.deleteUser,
 	)
-	.get('/:id', userController.getUser)
-	.get('/', userController.getAllUsers);
+	.get('/:id', [
+		// isAdmin,
+		// haveRole('ADMIN_ROLE', 'USER_ROLE'),
+		validatorFields
+	],userController.getUser)
+	.get('/', [
+		// isAdmin,
+		// haveRole('ADMIN_ROLE', 'USER_ROLE'),
+		validatorFields
+	],userController.getAllUsers);
 
 export default routes;

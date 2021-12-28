@@ -12,7 +12,7 @@ routes
 		'/register',
 		[
 			check('email', 'The email is not valid.').isEmail(),
-			check('username', 'The name is required').not().isEmpty(),
+			check('nickname', 'The nickname is required').not().isEmpty(),
 			check('password', 'The password must have more than 8 characters').isLength({ min: 8 }),
 			check('role').custom(validRole),
 			check('email').custom(validEmail),
