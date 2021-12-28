@@ -7,11 +7,11 @@ export const isAdmin = (req: Request, res: Response, next: any) => {
 		});
 	}
 
-	const { role, username } = req.user;
+	const { role, nickname } = req.user;
 
 	if (role !== 'ADMIN_ROLE') {
 		return res.status(401).json({
-			message: `${username} is not ADMIN`,
+			message: `${nickname} is not ADMIN`,
 		});
 	}
 

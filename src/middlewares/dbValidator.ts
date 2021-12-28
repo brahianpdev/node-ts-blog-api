@@ -1,6 +1,6 @@
 import Category from '../models/Category';
 import Post from '../models/Post';
-import Role from '../models/Roles';
+import Role from '../models/Role';
 import User from '../models/User';
 
 export const validRole = async (role = '') => {

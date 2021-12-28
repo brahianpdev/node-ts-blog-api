@@ -9,7 +9,7 @@ const validateJWT = async (req: Request, res: Response, next: any) => {
 
 	if (!token) {
 		return res.status(401).json({
-			msg: 'The request needs a token',
+			message: 'The request needs a token',
 		});
 	}
 
@@ -32,9 +32,10 @@ const validateJWT = async (req: Request, res: Response, next: any) => {
 
 		req.user = user;
 		next();
+
 	} catch (error) {
 		console.log(error);
-		res.status(401).json({
+		return res.status(401).json({
 			message: 'Invalid token',
 		});
 	}
