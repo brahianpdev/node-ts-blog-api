@@ -5,5 +5,6 @@ declare module 'express' {
 		user?: any;
 		jwtPayload?: any;
 		currentUser?: any;
+		nickname: any;
 	}
 }
