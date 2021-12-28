@@ -1,12 +1,31 @@
 import { Request, Response } from 'express';
-import Post from '../models/Post';
+import { Post } from '../models';
 
 class postController {
 	async createPost(req: Request, res: Response) {
-		const newPost = new Post(req.body);
 		try {
-			const savedPost = await newPost.save();
-			return res.status(200).json(savedPost);
+			const { state, user, ...body } = req.body;
+
+			const postDB = await Post.findOne({ title: body.title });
+
+			if (postDB) {
+				return res.status(400).json({
+					message: `The product ${postDB.title}, already exist`,
+				});
+			}
+
+			const data = {
+				...body,
+				// title: body.title,
+				title: body.title.toUpperCase(),
+				user: req.params.id,
+			};
+
+			const post = new Post(data);
+
+			await post.save();
+
+			res.status(201).json(post);
 		} catch (error) {
 			return res.status(500).json(error);
 		}
@@ -14,75 +33,64 @@ class postController {
 
 	async getPost(req: Request, res: Response) {
 		try {
-			const post = await Post.findById(req.params.id);
-			return res.status(200).json(post);
-		} catch (err) {
-			return res.status(500).json(err);
+			const post = await Post.findById(req.params.id)
+			.populate('user', 'nickname').populate('category', 'name');  //   
+
+			res.json(post);
+		} catch (error) {
+			return res.status(500).json(error);
 		}
 	}
 
 	async getAllPost(req: Request, res: Response) {
-		const username = req.query.user;
-		const catName = req.query.cat;
 		try {
-			let posts: any[];
-			if (username) {
-				posts = await Post.find({ username });
-			} else if (catName) {
-				posts = await Post.find({
-					categories: {
-						$in: [catName],
-					},
-				});
-			} else {
-				posts = await Post.find();
-			}
-			return res.status(200).json(posts);
-		} catch (err) {
-			return res.status(500).json(err);
+			const { limit = 5, from = 0 } = req.query;
+			const query = { state: true };
+
+			const [total, posts] = await Promise.all([
+				Post.countDocuments(query),
+				Post.find(query)
+					.populate('user', 'nickname')  //
+					.populate('category', 'name')  //
+					.skip(Number(from))
+					.limit(Number(limit)),
+			]);
+
+			res.json({
+				total,
+				posts,
+			});
+		} catch (error) {
+			return res.status(500).json(error);
 		}
 	}
 
 	async updatePost(req: Request, res: Response) {
 		try {
-			const post = await Post.findById(req.params.id);
-			if (post.username === req.body.username) {
-				try {
-					const updatedPost = await Post.findByIdAndUpdate(
-						req.params.id,
-						{
-							$set: req.body,
-						},
-						{ new: true },
-					);
-					return res.status(200).json(updatedPost);
-				} catch (error) {
-					return res.status(500).json(error);
-				}
-			} else {
-				return res.status(401).json('You can update only your post!');
+			const { id } = req.params;
+			const { state, nickname, ...data } = req.body;
+
+			if (data.title) {
+				data.title = data.title;
 			}
-		} catch (err) {
-			return res.status(500).json(err);
+
+			data.nickname = req.nickname._id;
+
+			const post = await Post.findByIdAndUpdate(id, data, { new: true });
+
+			res.json(post);
+		} catch (error) {
+			return res.status(500).json(error);
 		}
 	}
 
 	async deletePost(req: Request, res: Response) {
-		try {
-			const post = await Post.findById(req.params.id);
-			if (post.username === req.body.username) {
-				try {
-					await post.delete();
-					res.status(200).json('The post has been deleted...');
-				} catch (error) {
-					return res.status(500).json(error);
-				}
-			} else {
-				return res.status(401).json('You can delete only your post!');
-			}
-		} catch (error) {
-			res.status(500).json(error);
-		}
+	
+		const { id } = req.params;
+		const deletedPost = await Post.findByIdAndUpdate( id, { state: false }, {new: true });
+	
+		res.json( deletedPost );
+	
 	}
 }
 
