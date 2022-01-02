@@ -9,8 +9,6 @@ const {
 	CLOUDINARY_API_KEY,
 	CLOUDINARY_API_SECRET,
 	CLOUDINARY_URL,
-	GOOGLE_CLIENT_ID,
-	GOOGLE_SECRET_ID,
 } = process.env;
 
 export const config = {
@@ -28,9 +26,5 @@ export const config = {
 		key: CLOUDINARY_API_KEY,
 		secret: CLOUDINARY_API_SECRET,
 		url: CLOUDINARY_URL,
-	},
-	google: {
-		client: GOOGLE_CLIENT_ID,
-		secret: GOOGLE_SECRET_ID,
 	},
 };
