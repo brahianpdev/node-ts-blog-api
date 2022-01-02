@@ -1,11 +1,12 @@
 import { Router } from 'express';
 
-import authRoutes from './auth';
-import userRoutes from '../routes/user';
-import postsRoutes from '../routes/post';
-import categoriesRoutes from '../routes/categories';
-import uploadRoutes from '../routes/upload';
-import commentsRotes from '../routes/comments';
+import authRoutes from './auth.route';
+import userRoutes from './user.route';
+import postsRoutes from './post.route';
+import categoriesRoutes from './categories.route';
+import uploadRoutes from './upload.route';
+import commentsRoutes from './comments.route';
+import searchRoutes from './search.route';
 
 const routes = Router();
 
@@ -14,6 +15,7 @@ routes.use('/users', userRoutes);
 routes.use('/posts', postsRoutes);
 routes.use('/categories', categoriesRoutes);
 routes.use('/files', uploadRoutes); 
-routes.use('/comments', commentsRotes);
+routes.use('/comments', commentsRoutes);
+routes.use('/search', searchRoutes);
 
 export default routes;
