@@ -18,6 +18,13 @@ export const validEmail = async (email = '') => {
 	}
 };
 
+export const validNickname = async (nickname = '') => {
+	const nickNameExist = await User.findOne({ nickname });
+	if (nickNameExist) {
+		throw new Error(`This nickname: ${nickname} is already in use`);
+	}
+};
+
 export const validUserByID = async (id: any) => {
 	const userExists = await User.findById(id);
 	if (!userExists) {

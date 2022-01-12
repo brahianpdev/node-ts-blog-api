@@ -1,5 +1,5 @@
-import { validRole, validEmail, validUserByID, existsCategoryById, existPostById, existCommentById } from './dbValidator';
-export { validRole, validEmail, validUserByID, existsCategoryById, existPostById, existCommentById };
+import { validRole, validEmail, validUserByID, existsCategoryById, existPostById, existCommentById, validNickname } from './dbValidator';
+export { validRole, validEmail, validUserByID, existsCategoryById, existPostById, existCommentById, validNickname };
 
 import { isAdmin, haveRole } from './validateRoles';
 export { isAdmin, haveRole };
