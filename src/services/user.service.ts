@@ -2,12 +2,13 @@ import bcrypt from 'bcrypt';
 import { User } from '../models';
 
 export class UserService {
+
 	private userFiltered = (user: any) => {
 		const { id, password, $__, ...rest } = user;
 		return { ...rest };
 	};
 
-	async userUpdate(id: any, password, rest) {
+	async userUpdate(id: any, password: any, rest: any) {
 		try {
 			if (password) {
 				const salt = bcrypt.genSaltSync();
