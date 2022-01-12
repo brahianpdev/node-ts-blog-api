@@ -21,7 +21,7 @@ routes
 
 	.get('/',	
 		[	
-		validateJWT,
+		// validateJWT,
 		validateFields
 		], 
 		postController.getAllPost)

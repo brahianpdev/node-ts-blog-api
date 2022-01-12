@@ -8,7 +8,7 @@ import commentsController from '../controllers/comments.controller';
 routes.post('/', 
       [
             validateJWT,
-            check('description', 'The description is required').not().isEmpty(),
+            check('comment', 'The comment is required').not().isEmpty(),
             validateFields,
       ],
       commentsController.createComment)

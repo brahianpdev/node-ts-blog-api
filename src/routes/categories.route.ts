@@ -8,15 +8,25 @@ import { validateJWT, validateFields, existsCategoryById, isAdmin } from '../hel
 routes
 	.post(
 		'/',
-		[validateJWT, check('name', 'The name is required').not().isEmpty(), validateFields],
+		[
+			validateJWT, 
+			check('name', 'The name is required').not().isEmpty(), 
+			validateFields
+		],
 		categoriesController.createCategory,
 	)
+	
 	.get('/', categoriesController.getAllCategories)
+
 	.get(
 		'/:id',
-		[check('id', 'Not a valid Mongo ID').isMongoId(), check('id').custom(existsCategoryById), validateFields],
+		[
+			check('id', 'Not a valid Mongo ID').isMongoId(), 
+			check('id').custom(existsCategoryById), 
+			validateFields],
 		categoriesController.getCategory,
 	)
+
 	.put(
 		'/:id',
 		[
