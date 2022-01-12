@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Post } from '../models';
+import { PostService } from '../services/post.service';
 
 class postController {
 	async createPost(req: Request, res: Response) {
@@ -26,7 +27,7 @@ class postController {
 
 			res.status(201).json({
 				message: 'Post created successfully',
-				post
+				post,
 			});
 		} catch (error) {
 			return res.status(500).json(error);
@@ -35,14 +36,13 @@ class postController {
 
 	async getPost(req: Request, res: Response) {
 		try {
-			const post = await Post.findById(req.params.id);
-			// .populate('user', 'nickname').populate('category', 'name');  //
+			const post = await Post.findById(req.params.id)
+			.populate('category')
 
 			res.json(post);
 		} catch (error) {
 			return res.status(500).json(error);
 		}
-		
 	}
 
 	async getAllPost(req: Request, res: Response) {
@@ -71,19 +71,19 @@ class postController {
 	async updatePost(req: Request, res: Response) {
 		try {
 			const { id } = req.params;
-			const { state, user, ...data } = req.body;
+			const { state, user, ...rest } = req.body;
 
-			if (data.name) {
-				data.name = data.name.toUpperCase();
+			if (rest.title) {
+				rest.title = rest.title.toUpperCase();
 			}
 
-			data.user = req.user._id;
+			rest.user = req.user._id;
 
-			const post = await Post.findByIdAndUpdate(id, data, { new: true });
+			const post = await Post.findByIdAndUpdate(id, rest, { new: true });
 
 			res.status(200).json({
 				message: 'Post updated successfully',
-				post
+				post,
 			});
 		} catch (error) {
 			return res.status(500).json(error);
@@ -93,12 +93,13 @@ class postController {
 	async deletePost(req: Request, res: Response) {
 		try {
 			const { id } = req.params;
-		const deletedPost = await Post.findByIdAndUpdate(id, { state: false }, { new: true });
 
-		res.status(200).json({
-			message: 'Post deleted successfully',
-			deletedPost
-		});
+			const deletedPost = await new PostService().postDelete(id);
+
+			res.status(200).json({
+				message: 'Post deleted successfully',
+				deletedPost,
+			});
 		} catch (error) {
 			return res.status(500).json(error);
 		}

@@ -1,23 +1,19 @@
-import bcrypt from 'bcrypt';
 import { generateJWT } from '../middlewares';
 import { Request, Response } from 'express';
 
 import { User } from '../models';
+import { AuthService } from '../services/auth.service';
 class authController {
 	async register(req: Request, res: Response) {
 		try {
 			const { nickname, email, password, role } = req.body;
-
 			const user = new User({ nickname, email, password, role });
 
-			const salt = bcrypt.genSaltSync();
-			user.password = bcrypt.hashSync(password, salt);
-
-			const newUser = await user.save();
+			const userData = await new AuthService().authRegister(user, password);
 
 			return res.status(200).json({
 				message: 'Registered user successfully',
-				newUser,
+				userData,
 			});
 		} catch (error) {
 			res.status(500).json(error);
@@ -30,28 +26,11 @@ class authController {
 		try {
 			const user = await User.findOne({ email });
 
-			if (!user) {
-				return res.status(400).json({
-					message: 'User and or password is incorrect: email',
-				});
-			}
-
-			if (!user.state) {
-				return res.status(400).json({
-					message: 'User and or password is incorrect - state: false',
-				});
-			}
-
-			const validPassword = bcrypt.compareSync(password, user.password);
-			if (!validPassword) {
-				return res.status(400).json({
-					message: 'User and or password is incorrect: password',
-				});
-			}
-
+			await new AuthService().authLogin(email, password);
 			const token = await generateJWT(user.id);
 
 			res.json({
+				message: 'Logged in successfully',
 				user,
 				token,
 			});
