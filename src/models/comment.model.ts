@@ -2,9 +2,9 @@ import mongoose, { Schema } from 'mongoose';
 
 const CommentsSchema: Schema = new Schema(
 	{
-		description: {
+		comment: {
 			type: String,
-			required: [true, 'The description are required'],
+			required: [true, 'The comment are required'],
 			unique: true,
 		},
 		state: {
@@ -15,7 +15,7 @@ const CommentsSchema: Schema = new Schema(
 		nickname: {
 			type: Schema.Types.ObjectId,
 			ref: 'User',
-			// required: true,
+			required: [true, 'The ID of this User is required'],
 		},
 	},
 	{ timestamps: true },

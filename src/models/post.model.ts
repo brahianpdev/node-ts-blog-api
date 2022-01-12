@@ -14,7 +14,7 @@ const PostSchema = new Schema({
 	nickname: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
-		// required: true,
+		required: [true, 'The ID of this User is required'],
 	},
 	category: {
 		type: Schema.Types.ObjectId,
